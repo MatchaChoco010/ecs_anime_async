@@ -1,7 +1,7 @@
 use nalgebra as na;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Animation {
     pub name: String,
     pub total_frame: u64,
@@ -16,7 +16,7 @@ impl Animation {
     }
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Track {
     pub bind_name: String,
     pub bind_property: String,
@@ -24,7 +24,7 @@ pub struct Track {
     pub keyframes: Vec<Keyframe>,
 }
 
-#[derive(Serialize, Deserialize)]
+#[derive(Serialize, Deserialize, Debug)]
 pub struct Keyframe {
     pub position: u64,
     pub value: na::Point3<f32>,

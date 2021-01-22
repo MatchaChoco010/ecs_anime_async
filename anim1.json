@@ -1,7 +1,7 @@
 {
   "name": "anim1",
   "total_frame": 100,
-  "fps": 60,
+  "fps": 24,
   "tracks": [
     {
       "type": "Track",
@@ -28,6 +28,22 @@
         {
           "position": 99,
           "value": [100, 100, 10]
+        }
+      ]
+    },
+    {
+      "type": "Track",
+      "bind_name": "rect",
+      "bind_property": "Position",
+      "name": "circle position",
+      "keyframes": [
+        {
+          "position": 25,
+          "value": [600, 300, 10]
+        },
+        {
+          "position": 50,
+          "value": [100, 600, 10]
         }
       ]
     }

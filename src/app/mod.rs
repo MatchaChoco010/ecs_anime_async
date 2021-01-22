@@ -1,6 +1,7 @@
 mod app;
-mod components;
+pub mod components;
 mod keyframe;
 mod render;
+mod system;
 
 pub use app::App;

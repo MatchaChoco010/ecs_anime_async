@@ -5,67 +5,71 @@ use std::path::Path;
 
 use anyhow::Result;
 use ggez::event::{self, EventHandler, EventsLoop};
-use ggez::graphics::Color;
-use ggez::{Context, ContextBuilder, GameResult};
+use ggez::{timer, Context, ContextBuilder, GameResult};
 use legion::*;
+use legion::{storage::IntoComponentSource, systems::Builder};
 use serde_json;
 
-use super::components::*;
 use super::keyframe::Animation;
 use super::render::render;
+use super::system::*;
+
+pub struct Time {
+    pub delta: f64,
+}
+
+struct GameStateBuilderObject {
+    world: World,
+    resources: Resources,
+    schedule_builder: Builder,
+}
+impl GameStateBuilderObject {
+    fn build(mut self) -> GameState {
+        GameState {
+            world: self.world,
+            resources: self.resources,
+            schedule: self.schedule_builder.build(),
+        }
+    }
+
+    fn add_bundle<B: SystemBundle>(mut self) -> Self {
+        B::build(
+            &mut self.world,
+            &mut self.resources,
+            &mut self.schedule_builder,
+        );
+        self
+    }
+
+    fn flush(mut self) -> Self {
+        self.schedule_builder.flush();
+        self
+    }
+}
 
 struct GameState {
     world: World,
-    schedule: Schedule,
     resources: Resources,
+    schedule: Schedule,
 }
 impl GameState {
-    fn new() -> Self {
+    fn new() -> GameStateBuilderObject {
         let mut resources = Resources::default();
-        let mut world = World::default();
-        let schedule = Schedule::builder().build();
-
-        resources.insert(HashMap::<String, Animation>::new());
-
-        world.push((
-            Name {
-                name: "circle".to_string(),
-            },
-            Renderable::Circle {
-                radius: 30.0,
-                color: Color::from_rgb(255, 128, 128),
-            },
-            Position {
-                x: 100.0,
-                y: 100.0,
-                z: 5.0,
-            },
-        ));
-        world.push((
-            Name {
-                name: "rect".to_string(),
-            },
-            Renderable::Rectangle {
-                width: 50.0,
-                height: 30.0,
-                color: Color::from_rgb(0, 128, 255),
-            },
-            Position {
-                x: 600.0,
-                y: 100.0,
-                z: 10.0,
-            },
-        ));
-
-        Self {
-            world,
-            schedule,
+        resources.insert(Time { delta: 0.0 });
+        GameStateBuilderObject {
+            world: World::default(),
             resources,
+            schedule_builder: Schedule::builder(),
         }
     }
 }
 impl EventHandler for GameState {
-    fn update(&mut self, _ctx: &mut Context) -> GameResult<()> {
+    fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
+        {
+            let mut time = self.resources.get_mut::<Time>().expect("expect Time");
+            time.delta = timer::delta(ctx).as_secs_f64();
+        }
+
         self.schedule.execute(&mut self.world, &mut self.resources);
         Ok(())
     }
@@ -84,13 +88,24 @@ pub struct App {
 impl App {
     pub fn new(app_id: &str, author: &str) -> Result<Self> {
         let (ctx, event_loop) = ContextBuilder::new(app_id, author).build()?;
-        let game_state = GameState::new();
+
+        let game_state = GameState::new()
+            .add_bundle::<AnimationSystemBundle>()
+            .flush()
+            .build();
 
         Ok(Self {
             ctx,
             event_loop,
             game_state,
         })
+    }
+
+    pub fn push<T>(&mut self, components: T) -> Entity
+    where
+        Option<T>: IntoComponentSource,
+    {
+        self.game_state.world.push(components)
     }
 
     pub fn load_animation<S: ToString, P: AsRef<Path>>(
