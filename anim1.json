@@ -4,10 +4,8 @@
   "fps": 24,
   "tracks": [
     {
-      "type": "Track",
+      "type": "PositionTrack",
       "bind_name": "circle",
-      "bind_property": "Position",
-      "name": "circle position",
       "keyframes": [
         {
           "position": 0,
@@ -32,10 +30,22 @@
       ]
     },
     {
-      "type": "Track",
+      "type": "RenderableColorTrack",
+      "bind_name": "circle",
+      "keyframes": [
+        {
+          "position": 10,
+          "value": [0, 0.5, 1, 1]
+        },
+        {
+          "position": 90,
+          "value": [1, 0.5, 1, 1]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
       "bind_name": "rect",
-      "bind_property": "Position",
-      "name": "circle position",
       "keyframes": [
         {
           "position": 25,

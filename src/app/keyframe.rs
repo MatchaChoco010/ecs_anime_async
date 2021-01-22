@@ -11,21 +11,47 @@ pub struct Animation {
 impl Animation {
     pub fn sort_keyframes(&mut self) {
         for track in self.tracks.iter_mut() {
-            track.keyframes.sort_by_key(|k| k.position);
+            track.sort_keyframes();
         }
     }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Track {
-    pub bind_name: String,
-    pub bind_property: String,
-    pub name: String,
-    pub keyframes: Vec<Keyframe>,
+#[serde(tag = "type")]
+pub enum Track {
+    PositionTrack {
+        bind_name: String,
+        keyframes: Vec<PositionKeyframe>,
+    },
+    RenderableColorTrack {
+        bind_name: String,
+        keyframes: Vec<RenderableColorKeyframe>,
+    },
+}
+impl Track {
+    fn sort_keyframes(&mut self) {
+        match self {
+            Track::PositionTrack { keyframes, .. } => keyframes.sort_by_key(|k| k.position),
+            Track::RenderableColorTrack { keyframes, .. } => keyframes.sort_by_key(|k| k.position),
+        }
+    }
+
+    pub fn bind_name(&self) -> &String {
+        match self {
+            Track::PositionTrack { bind_name, .. } => bind_name,
+            Track::RenderableColorTrack { bind_name, .. } => bind_name,
+        }
+    }
 }
 
 #[derive(Serialize, Deserialize, Debug)]
-pub struct Keyframe {
+pub struct PositionKeyframe {
     pub position: u64,
     pub value: na::Point3<f32>,
+}
+
+#[derive(Serialize, Deserialize, Debug)]
+pub struct RenderableColorKeyframe {
+    pub position: u64,
+    pub value: na::Vector4<f32>,
 }
