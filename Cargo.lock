@@ -602,6 +602,7 @@ dependencies = [
  "ggez",
  "legion",
  "nalgebra 0.24.0",
+ "rayon",
  "serde",
  "serde_json",
 ]

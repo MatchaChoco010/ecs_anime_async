@@ -1,3 +1,4 @@
+mod animation_player;
 mod app;
 pub mod components;
 mod keyframe;

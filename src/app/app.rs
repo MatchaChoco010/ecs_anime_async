@@ -10,9 +10,9 @@ use legion::*;
 use legion::{storage::IntoComponentSource, systems::Builder};
 use serde_json;
 
-use super::keyframe::Animation;
 use super::render::render;
 use super::system::*;
+use super::{animation_player::AnimationPlayerContainer, keyframe::Animation};
 
 pub struct Time {
     pub delta: f64,
@@ -124,6 +124,27 @@ impl App {
             .insert(anim_name.to_string(), anim);
 
         Ok(())
+    }
+
+    pub fn play_animation<S: ToString>(&mut self, anim_name: S) {
+        if cfg!(debug_assertions) {
+            if self
+                .game_state
+                .resources
+                .get::<HashMap<String, Animation>>()
+                .expect("expect anim hash map")
+                .get(&anim_name.to_string())
+                .is_none()
+            {
+                panic!(format!("No such name animation: {}", anim_name.to_string()));
+            }
+        }
+
+        self.game_state
+            .resources
+            .get_mut::<AnimationPlayerContainer>()
+            .expect("expect animation player container")
+            .new_anim(anim_name.to_string());
     }
 
     pub fn run(&mut self) -> Result<()> {

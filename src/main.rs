@@ -9,6 +9,7 @@ fn main() -> Result<()> {
     let mut app = App::new("app", "Orito Itsuki")?;
 
     app.load_animation("anim1", "./anim1.json")?;
+    app.play_animation("anim1");
     app.push((
         Name {
             name: "circle".to_string(),
@@ -22,7 +23,6 @@ fn main() -> Result<()> {
             y: 100.0,
             z: 5.0,
         },
-        AnimationPlayer::new("anim1"),
     ));
     app.push((
         Name {
@@ -38,7 +38,6 @@ fn main() -> Result<()> {
             y: 100.0,
             z: 10.0,
         },
-        AnimationPlayer::new("anim1"),
     ));
 
     app.run()
