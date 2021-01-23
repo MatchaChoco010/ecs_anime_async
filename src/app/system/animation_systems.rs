@@ -11,8 +11,7 @@ use rayon::prelude::*;
 use super::super::components::*;
 use super::super::keyframe::*;
 use super::SystemBundle;
-use crate::app::animation_player::AnimationPlayerContainer;
-use crate::app::app::Time;
+use crate::app::resource::{AnimationPlayerContainer, Time};
 
 #[system]
 pub fn animation_timer_update(

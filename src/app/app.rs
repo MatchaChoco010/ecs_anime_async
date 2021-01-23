@@ -10,13 +10,10 @@ use legion::*;
 use legion::{storage::IntoComponentSource, systems::Builder};
 use serde_json;
 
+use super::keyframe::Animation;
 use super::render::render;
+use super::resource::{AnimationPlayerContainer, Time};
 use super::system::*;
-use super::{animation_player::AnimationPlayerContainer, keyframe::Animation};
-
-pub struct Time {
-    pub delta: f64,
-}
 
 struct GameStateBuilderObject {
     world: World,
