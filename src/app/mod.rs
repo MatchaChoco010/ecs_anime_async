@@ -6,4 +6,4 @@ mod resource;
 pub mod runtime;
 mod system;
 
-pub use app::App;
+pub use app::*;

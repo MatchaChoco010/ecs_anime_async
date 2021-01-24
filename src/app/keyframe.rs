@@ -1,7 +1,7 @@
 use nalgebra as na;
 use serde::{Deserialize, Serialize};
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct Animation {
     pub name: String,
     pub total_frame: u64,
@@ -16,7 +16,7 @@ impl Animation {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 #[serde(tag = "type")]
 pub enum Track {
     PositionTrack {
@@ -44,13 +44,13 @@ impl Track {
     }
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct PositionKeyframe {
     pub position: u64,
     pub value: na::Point3<f32>,
 }
 
-#[derive(Serialize, Deserialize, Debug)]
+#[derive(Serialize, Deserialize, Debug, Clone)]
 pub struct RenderableColorKeyframe {
     pub position: u64,
     pub value: na::Vector4<f32>,

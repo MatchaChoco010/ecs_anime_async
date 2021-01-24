@@ -1,14 +1,14 @@
+use std::cell::RefCell;
 use std::future::Future;
 use std::pin::Pin;
+use std::rc::Rc;
 use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
-
-use futures::channel::oneshot;
 
 use super::JoinHandle;
 
 pub struct Task {
-    future: Pin<Box<dyn Future<Output = ()> + Send>>,
+    future: Pin<Box<dyn Future<Output = ()>>>,
     pub(super) callback_waker: Option<Waker>,
 }
 impl Task {
@@ -23,20 +23,24 @@ impl Task {
 
 pub(super) fn joinable<F>(future: F) -> (Arc<Mutex<Task>>, JoinHandle<F::Output>)
 where
-    F: Future + Send + 'static,
-    F::Output: Send + 'static,
+    F: Future + 'static,
+    F::Output: 'static,
 {
-    let (sender, receiver) = oneshot::channel();
+    let value = Rc::new(RefCell::new(None));
 
-    let task = Arc::new(Mutex::new(Task {
-        future: Box::pin(async {
-            let _ = sender.send(future.await);
-        }),
-        callback_waker: None,
-    }));
+    let task = {
+        let value = Rc::clone(&value);
+        Arc::new(Mutex::new(Task {
+            future: Box::pin(async move {
+                let mut value = value.borrow_mut();
+                *value = Some(future.await);
+            }),
+            callback_waker: None,
+        }))
+    };
 
     let handle = JoinHandle {
-        receiver,
+        value,
         task: Arc::clone(&task),
     };
 

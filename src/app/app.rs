@@ -1,10 +1,13 @@
+use std::cell::RefCell;
 use std::collections::HashMap;
 use std::fs::File;
 use std::io::BufReader;
 use std::path::Path;
+use std::thread_local;
+use std::time::{Duration, Instant};
 
 use anyhow::Result;
-use ggez::event::{self, EventHandler, EventsLoop};
+use ggez::event::{self, EventHandler, EventsLoop, KeyCode, KeyMods};
 use ggez::{timer, Context, ContextBuilder, GameResult};
 use legion::*;
 use legion::{storage::IntoComponentSource, systems::Builder};
@@ -12,29 +15,27 @@ use serde_json;
 
 use super::keyframe::Animation;
 use super::render::render;
-use super::resource::{AnimationPlayerContainer, Time};
+use super::resource::{AnimationPlayerContainer, KeyInputHashMap, Time};
+use super::runtime;
 use super::system::*;
 
+thread_local! {
+    pub static WORLD: RefCell<World> = RefCell::new(World::default());
+    pub static RESOURCES: RefCell<Resources> = RefCell::new(Resources::default());
+}
+
 struct GameStateBuilderObject {
-    world: World,
-    resources: Resources,
     schedule_builder: Builder,
 }
 impl GameStateBuilderObject {
     fn build(mut self) -> GameState {
         GameState {
-            world: self.world,
-            resources: self.resources,
             schedule: self.schedule_builder.build(),
         }
     }
 
     fn add_bundle<B: SystemBundle>(mut self) -> Self {
-        B::build(
-            &mut self.world,
-            &mut self.resources,
-            &mut self.schedule_builder,
-        );
+        B::build(&mut self.schedule_builder);
         self
     }
 
@@ -45,17 +46,16 @@ impl GameStateBuilderObject {
 }
 
 struct GameState {
-    world: World,
-    resources: Resources,
     schedule: Schedule,
 }
 impl GameState {
     fn new() -> GameStateBuilderObject {
-        let mut resources = Resources::default();
-        resources.insert(Time { delta: 0.0 });
+        RESOURCES.with(|r| {
+            let mut r = r.borrow_mut();
+            r.insert(Time { delta: 0.0 });
+            r.insert(KeyInputHashMap::new());
+        });
         GameStateBuilderObject {
-            world: World::default(),
-            resources,
             schedule_builder: Schedule::builder(),
         }
     }
@@ -63,17 +63,67 @@ impl GameState {
 impl EventHandler for GameState {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
         {
-            let mut time = self.resources.get_mut::<Time>().expect("expect Time");
-            time.delta = timer::delta(ctx).as_secs_f64();
+            RESOURCES.with(|r| {
+                let r = r.borrow_mut();
+                let mut time = r.get_mut::<Time>().expect("expect Time");
+                time.delta = timer::delta(ctx).as_secs_f64();
+            });
         }
 
-        self.schedule.execute(&mut self.world, &mut self.resources);
+        runtime::runtime_update();
+
+        WORLD.with(|w| {
+            let world = &mut *w.borrow_mut();
+            RESOURCES.with(|r| {
+                let resources = &mut *r.borrow_mut();
+                self.schedule.execute(world, resources);
+            })
+        });
+
         Ok(())
     }
 
     fn draw(&mut self, ctx: &mut Context) -> GameResult<()> {
-        render(ctx, &mut self.world)?;
+        render(ctx)?;
         Ok(())
+    }
+
+    fn key_down_event(
+        &mut self,
+        _ctx: &mut Context,
+        keycode: KeyCode,
+        _keymods: KeyMods,
+        _repeat: bool,
+    ) {
+        RESOURCES.with(|r| {
+            let r = r.borrow_mut();
+            let mut key_input_hashmap = r
+                .get_mut::<KeyInputHashMap>()
+                .expect("expect KeyInputHashMap");
+            key_input_hashmap.set_down(keycode)
+        });
+    }
+
+    fn key_up_event(&mut self, _ctx: &mut Context, keycode: KeyCode, _keymods: KeyMods) {
+        RESOURCES.with(|r| {
+            let r = r.borrow_mut();
+            let mut key_input_hashmap = r
+                .get_mut::<KeyInputHashMap>()
+                .expect("expect KeyInputHashMap");
+            key_input_hashmap.set_up(keycode)
+        });
+    }
+
+    fn focus_event(&mut self, _ctx: &mut Context, gained: bool) {
+        if gained {
+            RESOURCES.with(|r| {
+                let r = r.borrow_mut();
+                let mut key_input_hashmap = r
+                    .get_mut::<KeyInputHashMap>()
+                    .expect("expect KeyInputHashMap");
+                key_input_hashmap.reset();
+            });
+        }
     }
 }
 
@@ -98,54 +148,92 @@ impl App {
         })
     }
 
-    pub fn push<T>(&mut self, components: T) -> Entity
-    where
-        Option<T>: IntoComponentSource,
-    {
-        self.game_state.world.push(components)
-    }
-
-    pub fn load_animation<S: ToString, P: AsRef<Path>>(
-        &mut self,
-        anim_name: S,
-        path: P,
-    ) -> Result<()> {
-        let buf = BufReader::new(File::open(path)?);
-        let mut anim: Animation = serde_json::from_reader(buf)?;
-        anim.sort_keyframes();
-
-        self.game_state
-            .resources
-            .get_mut::<HashMap<String, Animation>>()
-            .expect("expect anim hash map")
-            .insert(anim_name.to_string(), anim);
-
+    pub fn run(&mut self) -> Result<()> {
+        event::run(&mut self.ctx, &mut self.event_loop, &mut self.game_state)?;
         Ok(())
     }
+}
 
-    pub fn play_animation<S: ToString>(&mut self, anim_name: S) {
-        if cfg!(debug_assertions) {
-            if self
-                .game_state
-                .resources
+pub fn push<T>(components: T) -> Entity
+where
+    Option<T>: IntoComponentSource,
+{
+    WORLD.with(|w| w.borrow_mut().push(components))
+}
+
+pub fn load_animation<S: ToString, P: AsRef<Path>>(anim_name: S, path: P) -> Result<()> {
+    let buf = BufReader::new(File::open(path)?);
+    let mut anim: Animation = serde_json::from_reader(buf)?;
+    anim.sort_keyframes();
+
+    RESOURCES.with(|r| {
+        r.borrow_mut()
+            .get_mut::<HashMap<String, Animation>>()
+            .expect("expect anim hash map")
+            .insert(anim_name.to_string(), anim)
+    });
+
+    Ok(())
+}
+
+pub fn play_animation<S: ToString>(anim_name: S) {
+    if cfg!(debug_assertions) {
+        if RESOURCES.with(|r| {
+            r.borrow()
                 .get::<HashMap<String, Animation>>()
                 .expect("expect anim hash map")
                 .get(&anim_name.to_string())
                 .is_none()
-            {
-                panic!(format!("No such name animation: {}", anim_name.to_string()));
-            }
+        }) {
+            panic!(format!("No such name animation: {}", anim_name.to_string()));
         }
-
-        self.game_state
-            .resources
-            .get_mut::<AnimationPlayerContainer>()
-            .expect("expect animation player container")
-            .new_anim(anim_name.to_string());
     }
 
-    pub fn run(&mut self) -> Result<()> {
-        event::run(&mut self.ctx, &mut self.event_loop, &mut self.game_state)?;
-        Ok(())
+    RESOURCES.with(|r| {
+        r.borrow_mut()
+            .get_mut::<AnimationPlayerContainer>()
+            .expect("expect animation player container")
+            .new_anim(anim_name.to_string())
+    });
+}
+
+pub fn is_key_pressed(keycode: KeyCode) -> bool {
+    RESOURCES.with(|r| {
+        let r = r.borrow();
+        let key_input_hashmap = r.get::<KeyInputHashMap>().expect("expect KeyInputHashMap");
+        key_input_hashmap.pressed(keycode)
+    })
+}
+
+pub async fn key_press(keycode: KeyCode) {
+    while !is_key_pressed(keycode) {
+        runtime::next_frame().await;
+    }
+}
+
+pub async fn play_animation_async<S: ToString>(anim_name: S) {
+    let anim = RESOURCES.with(|r| {
+        r.borrow()
+            .get::<HashMap<String, Animation>>()
+            .expect("expect anim hash map")
+            .get(&anim_name.to_string())
+            .unwrap()
+            .clone()
+    });
+
+    let start = Instant::now();
+    let anim_duration = Duration::from_secs_f64(anim.total_frame as f64 / anim.fps);
+
+    play_animation(anim_name);
+
+    loop {
+        let now = Instant::now();
+        let duration = now.duration_since(start);
+
+        if anim_duration < duration {
+            break;
+        }
+
+        runtime::delay(anim_duration - duration).await;
     }
 }

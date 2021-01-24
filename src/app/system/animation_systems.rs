@@ -4,13 +4,14 @@
 
 use std::collections::HashMap;
 
+use legion::systems::Builder;
 use legion::*;
-use legion::{systems::Builder, Resources, World};
 use rayon::prelude::*;
 
 use super::super::components::*;
 use super::super::keyframe::*;
 use super::SystemBundle;
+use crate::app::app::RESOURCES;
 use crate::app::resource::{AnimationPlayerContainer, Time};
 
 #[system]
@@ -202,9 +203,21 @@ pub fn renderable_color_animation(
 
 pub struct AnimationSystemBundle;
 impl SystemBundle for AnimationSystemBundle {
-    fn build(_world: &mut World, resources: &mut Resources, schedule: &mut Builder) {
-        resources.insert(HashMap::<String, Animation>::new());
-        resources.insert(AnimationPlayerContainer::new());
+    // fn build(_world: &mut World, resources: &mut Resources, schedule: &mut Builder) {
+    //     resources.insert(HashMap::<String, Animation>::new());
+    //     resources.insert(AnimationPlayerContainer::new());
+
+    //     schedule.add_system(animation_timer_update_system());
+    //     schedule.flush();
+    //     schedule.add_system(position_animation_system());
+    //     schedule.add_system(renderable_color_animation_system());
+    // }
+    fn build(schedule: &mut Builder) {
+        RESOURCES.with(|resources| {
+            let mut resources = resources.borrow_mut();
+            resources.insert(HashMap::<String, Animation>::new());
+            resources.insert(AnimationPlayerContainer::new());
+        });
 
         schedule.add_system(animation_timer_update_system());
         schedule.flush();
