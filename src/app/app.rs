@@ -176,7 +176,7 @@ pub fn load_animation<S: ToString, P: AsRef<Path>>(anim_name: S, path: P) -> Res
     Ok(())
 }
 
-pub fn play_animation<S: ToString>(anim_name: S) {
+pub fn play_animation_forget<S: ToString>(anim_name: S) {
     if cfg!(debug_assertions) {
         if RESOURCES.with(|r| {
             r.borrow()
@@ -211,7 +211,7 @@ pub async fn key_press(keycode: KeyCode) {
     }
 }
 
-pub async fn play_animation_async<S: ToString>(anim_name: S) {
+pub async fn play_animation<S: ToString>(anim_name: S) {
     let anim = RESOURCES.with(|r| {
         r.borrow()
             .get::<HashMap<String, Animation>>()
@@ -224,7 +224,7 @@ pub async fn play_animation_async<S: ToString>(anim_name: S) {
     let start = Instant::now();
     let anim_duration = Duration::from_secs_f64(anim.total_frame as f64 / anim.fps);
 
-    play_animation(anim_name);
+    play_animation_forget(anim_name);
 
     loop {
         let now = Instant::now();

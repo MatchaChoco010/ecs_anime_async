@@ -44,7 +44,7 @@ fn main() -> Result<()> {
     runtime::spawn(async {
         loop {
             app::key_press(KeyCode::Z).await;
-            app::play_animation_async("anim1").await;
+            app::play_animation("anim1").await;
         }
     });
 

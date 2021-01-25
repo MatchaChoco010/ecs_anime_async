@@ -2,7 +2,6 @@ use std::cell::RefCell;
 use std::future::Future;
 use std::pin::Pin;
 use std::rc::Rc;
-use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll, Waker};
 
 use super::JoinHandle;
@@ -21,7 +20,7 @@ impl Task {
     }
 }
 
-pub(super) fn joinable<F>(future: F) -> (Arc<Mutex<Task>>, JoinHandle<F::Output>)
+pub(super) fn joinable<F>(future: F) -> (Rc<RefCell<Task>>, JoinHandle<F::Output>)
 where
     F: Future + 'static,
     F::Output: 'static,
@@ -30,7 +29,7 @@ where
 
     let task = {
         let value = Rc::clone(&value);
-        Arc::new(Mutex::new(Task {
+        Rc::new(RefCell::new(Task {
             future: Box::pin(async move {
                 let mut value = value.borrow_mut();
                 *value = Some(future.await);
@@ -41,7 +40,7 @@ where
 
     let handle = JoinHandle {
         value,
-        task: Arc::clone(&task),
+        task: Rc::clone(&task),
     };
 
     (task, handle)

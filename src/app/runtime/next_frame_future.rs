@@ -1,12 +1,13 @@
+use std::cell::RefCell;
 use std::future::Future;
 use std::pin::Pin;
-use std::sync::Mutex;
 use std::task::{Context, Poll, Waker};
+use std::thread_local;
 
-use once_cell::sync::Lazy;
-
-pub(super) static FRAME_CHANGE_EVENT: Lazy<Mutex<FrameChangeEvent>> =
-    Lazy::new(|| Mutex::new(FrameChangeEvent::new()));
+thread_local! {
+    pub(super) static FRAME_CHANGE_EVENT: RefCell<FrameChangeEvent> =
+        RefCell::new(FrameChangeEvent::new());
+}
 
 pub(super) struct FrameChangeEvent {
     wakers: Vec<Waker>,
@@ -44,7 +45,7 @@ impl Future for NextFrameFuture {
         } else {
             self.called = true;
             let waker = cx.waker().clone();
-            FRAME_CHANGE_EVENT.lock().unwrap().register_callback(waker);
+            FRAME_CHANGE_EVENT.with(|ev| ev.borrow_mut().register_callback(waker));
             Poll::Pending
         }
     }

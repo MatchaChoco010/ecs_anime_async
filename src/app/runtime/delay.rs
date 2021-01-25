@@ -2,12 +2,6 @@ use std::time::{Duration, Instant};
 
 use super::super::runtime;
 
-// use futures_timer::Delay;
-
-// pub fn delay(duration: Duration) -> impl Future {
-//     Delay::new(duration)
-// }
-
 pub async fn delay(duration: Duration) {
     let start = Instant::now();
     loop {

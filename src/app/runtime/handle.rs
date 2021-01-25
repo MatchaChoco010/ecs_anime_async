@@ -2,7 +2,6 @@ use std::cell::RefCell;
 use std::future::Future;
 use std::pin::Pin;
 use std::rc::Rc;
-use std::sync::{Arc, Mutex};
 use std::task::{Context, Poll};
 
 use super::task::Task;
@@ -10,7 +9,7 @@ use super::task::Task;
 pub struct JoinHandle<T> {
     // pub(super) receiver: Receiver<T>,
     pub(super) value: Rc<RefCell<Option<T>>>,
-    pub(super) task: Arc<Mutex<Task>>,
+    pub(super) task: Rc<RefCell<Task>>,
 }
 impl<T> Future for JoinHandle<T> {
     type Output = T;
@@ -20,7 +19,7 @@ impl<T> Future for JoinHandle<T> {
             Poll::Ready(val)
         } else {
             let waker = cx.waker().clone();
-            self.task.lock().unwrap().register_callback(waker);
+            self.task.borrow_mut().register_callback(waker);
             Poll::Pending
         }
     }
