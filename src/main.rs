@@ -38,6 +38,20 @@ fn main() -> Result<()> {
             z: 10.0,
         },
     ));
+    app::push((
+        Name {
+            name: "text".to_string(),
+        },
+        Renderable::Text {
+            text: "Hello world!".to_string(),
+            color: Color::from_rgb(0, 64, 128),
+        },
+        Position {
+            x: 300.0,
+            y: 300.0,
+            z: 10.0,
+        },
+    ));
 
     app::load_animation("anim1", "./anim1.json")?;
 

@@ -14,6 +14,10 @@ pub enum Renderable {
         height: f32,
         color: Color,
     },
+    Text {
+        text: String,
+        color: Color,
+    },
 }
 
 pub struct Position {

@@ -1,4 +1,6 @@
-use ggez::graphics::{self, Color, DrawMode, DrawParam, FillOptions, Mesh, Rect};
+use ggez::graphics::{
+    self, Color, DrawMode, DrawParam, FillOptions, Mesh, Rect, Text, TextFragment,
+};
 use ggez::nalgebra as na;
 use ggez::{Context, GameResult};
 use legion::*;
@@ -45,6 +47,14 @@ pub fn render(ctx: &mut Context) -> GameResult<()> {
                     )
                     .unwrap();
                     graphics::draw(ctx, mesh, draw_param).unwrap()
+                }
+                Renderable::Text { text, color } => {
+                    let fragment = TextFragment::new(text.as_str());
+                    let fragment = fragment.color(color.clone());
+                    let text = Text::new(fragment);
+                    let draw_param = DrawParam::default();
+                    let draw_param = draw_param.dest([pos.x, pos.y]);
+                    graphics::draw(ctx, &text, draw_param).unwrap()
                 }
             }
         }

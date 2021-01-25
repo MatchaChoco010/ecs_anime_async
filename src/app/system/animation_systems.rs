@@ -149,6 +149,12 @@ pub fn renderable_color_animation(
                                             color.b = first.value.z;
                                             color.a = first.value.w;
                                         }
+                                        Renderable::Text { color, .. } => {
+                                            color.r = first.value.x;
+                                            color.g = first.value.y;
+                                            color.b = first.value.z;
+                                            color.a = first.value.w;
+                                        }
                                     }
                                 } else if last.position < player.frame {
                                     match renderable {
@@ -159,6 +165,12 @@ pub fn renderable_color_animation(
                                             color.a = last.value.w;
                                         }
                                         Renderable::Rectangle { color, .. } => {
+                                            color.r = last.value.x;
+                                            color.g = last.value.y;
+                                            color.b = last.value.z;
+                                            color.a = last.value.w;
+                                        }
+                                        Renderable::Text { color, .. } => {
                                             color.r = last.value.x;
                                             color.g = last.value.y;
                                             color.b = last.value.z;
@@ -186,6 +198,12 @@ pub fn renderable_color_animation(
                                         color.a = a;
                                     }
                                     Renderable::Rectangle { color, .. } => {
+                                        color.r = r;
+                                        color.g = g;
+                                        color.b = b;
+                                        color.a = a;
+                                    }
+                                    Renderable::Text { color, .. } => {
                                         color.r = r;
                                         color.g = g;
                                         color.b = b;

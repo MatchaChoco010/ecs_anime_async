@@ -62,13 +62,11 @@ impl GameState {
 }
 impl EventHandler for GameState {
     fn update(&mut self, ctx: &mut Context) -> GameResult<()> {
-        {
-            RESOURCES.with(|r| {
-                let r = r.borrow_mut();
-                let mut time = r.get_mut::<Time>().expect("expect Time");
-                time.delta = timer::delta(ctx).as_secs_f64();
-            });
-        }
+        RESOURCES.with(|r| {
+            let r = r.borrow_mut();
+            let mut time = r.get_mut::<Time>().expect("expect Time");
+            time.delta = timer::delta(ctx).as_secs_f64();
+        });
 
         runtime::runtime_update();
 
