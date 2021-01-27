@@ -31,8 +31,9 @@ where
         let value = Rc::clone(&value);
         Rc::new(RefCell::new(Task {
             future: Box::pin(async move {
+                let output = future.await;
                 let mut value = value.borrow_mut();
-                *value = Some(future.await);
+                *value = Some(output);
             }),
             callback_waker: None,
         }))
