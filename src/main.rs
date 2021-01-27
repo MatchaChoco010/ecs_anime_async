@@ -1,5 +1,5 @@
 use anyhow::Result;
-use futures::{join, pin_mut, select, FutureExt};
+use futures::{join, select, FutureExt};
 use ggez::event::KeyCode;
 use ggez::graphics::Color;
 
@@ -81,20 +81,15 @@ fn main() -> Result<()> {
             app::key_press(KeyCode::Z).await;
             app::play_animation("modal-fade-in").await;
 
-            let press_z = app::key_press(KeyCode::Z).fuse();
-            let press_x = app::key_press(KeyCode::X).fuse();
-            pin_mut!(press_z);
-            pin_mut!(press_x);
-
             select! {
-                _ = press_x => {
+                _ = app::key_press(KeyCode::X).fuse() => {
                     join!(
                         app::play_animation("modal-fade-out"),
                         app::play_animation("x-select-effect")
                     );
                     println!("X pressed");
                 },
-                _ = press_z => {
+                _ = app::key_press(KeyCode::Z).fuse() => {
                     join!(
                         app::play_animation("modal-fade-out"),
                         app::play_animation("z-select-effect")
