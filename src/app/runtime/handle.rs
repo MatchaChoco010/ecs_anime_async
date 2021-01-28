@@ -7,7 +7,6 @@ use std::task::{Context, Poll};
 use super::task::Task;
 
 pub struct JoinHandle<T> {
-    // pub(super) receiver: Receiver<T>,
     pub(super) value: Rc<RefCell<Option<T>>>,
     pub(super) task: Rc<RefCell<Task>>,
 }
