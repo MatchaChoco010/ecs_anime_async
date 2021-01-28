@@ -25,3 +25,11 @@ pub struct Position {
     pub y: f32,
     pub z: f32,
 }
+
+pub struct Message {
+    pub timer: f64,
+}
+
+pub struct MessageText {
+    pub timer: f64,
+}

@@ -7,12 +7,16 @@ use std::thread_local;
 use std::time::{Duration, Instant};
 
 use anyhow::Result;
-use ggez::event::{self, EventHandler, EventsLoop, KeyCode, KeyMods};
+use ggez::{
+    event::{self, EventHandler, EventsLoop, KeyCode, KeyMods},
+    graphics::Color,
+};
 use ggez::{timer, Context, ContextBuilder, GameResult};
 use legion::*;
 use legion::{storage::IntoComponentSource, systems::Builder};
 use serde_json;
 
+use super::components::*;
 use super::keyframe::Animation;
 use super::render::render;
 use super::resource::{AnimationPlayerContainer, KeyInputHashMap, Time};
@@ -135,6 +139,7 @@ impl App {
         let (ctx, event_loop) = ContextBuilder::new(app_id, author).build()?;
 
         let game_state = GameState::new()
+            .add_bundle::<MessageSystemBundle>()
             .add_bundle::<AnimationSystemBundle>()
             .flush()
             .build();
@@ -234,4 +239,35 @@ pub async fn play_animation<S: ToString>(anim_name: S) {
 
         runtime::delay(anim_duration - duration).await;
     }
+}
+
+pub fn add_message<S: ToString>(message: S) {
+    WORLD.with(|world| {
+        let mut world = world.borrow_mut();
+        world.push((
+            Position {
+                x: 100.0,
+                y: 350.0,
+                z: 25.0,
+            },
+            Renderable::Rectangle {
+                width: 200.0,
+                height: 25.0,
+                color: Color::from_rgb(0, 0, 0),
+            },
+            Message { timer: 0.0 },
+        ));
+        world.push((
+            Position {
+                x: 30.0,
+                y: 350.0,
+                z: 30.0,
+            },
+            Renderable::Text {
+                text: message.to_string(),
+                color: Color::from_rgb(255, 255, 255),
+            },
+            MessageText { timer: 0.0 },
+        ));
+    })
 }

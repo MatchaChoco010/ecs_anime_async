@@ -1,7 +1,10 @@
+use std::time::Duration;
+
 use anyhow::Result;
 use futures::{join, select, FutureExt};
 use ggez::event::KeyCode;
 use ggez::graphics::Color;
+use rand::Rng;
 
 mod app;
 use app::components::*;
@@ -67,6 +70,18 @@ fn load_entities() {
     ));
 }
 
+fn random_text() -> String {
+    let texts = [
+        "Hello World!",
+        "Text Message",
+        "Hoge hoge",
+        "Fuga Fuga",
+        "Boo Foo",
+    ];
+    let mut rng = rand::thread_rng();
+    texts[rng.gen_range(0..texts.len())].to_string()
+}
+
 fn main() -> Result<()> {
     let mut app = App::new("app", "Orito Itsuki")?;
 
@@ -97,6 +112,17 @@ fn main() -> Result<()> {
                     println!("Z pressed");
                 },
             }
+        }
+    });
+
+    runtime::spawn(async {
+        loop {
+            app::key_press(KeyCode::C).await;
+
+            let message = random_text();
+            app::add_message(message);
+
+            runtime::delay(Duration::from_secs_f64(0.3)).await;
         }
     });
 
