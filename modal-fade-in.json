@@ -1,0 +1,63 @@
+{
+  "name": "modal-fade-in",
+  "total_frame": 80,
+  "fps": 60,
+  "tracks": [
+    {
+      "type": "PositionTrack",
+      "bind_name": "modal-window",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [400, 500, 10]
+        },
+        {
+          "position": 60,
+          "value": [400, 300, 10]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "modal-window",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [0, 0, 0, 0]
+        },
+        {
+          "position": 50,
+          "value": [0, 0, 0, 1]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "z-text",
+      "keyframes": [
+        {
+          "position": 60,
+          "value": [1, 1, 1, 0]
+        },
+        {
+          "position": 79,
+          "value": [1, 1, 1, 1]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "x-text",
+      "keyframes": [
+        {
+          "position": 60,
+          "value": [1, 1, 1, 0]
+        },
+        {
+          "position": 79,
+          "value": [1, 1, 1, 1]
+        }
+      ]
+    }
+  ]
+}

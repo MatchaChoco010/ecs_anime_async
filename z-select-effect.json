@@ -1,0 +1,35 @@
+{
+  "name": "z-select-effect",
+  "total_frame": 30,
+  "fps": 60,
+  "tracks": [
+    {
+      "type": "PositionTrack",
+      "bind_name": "select-effect-circle",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [300, 300, 12]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "select-effect-circle",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 0]
+        },
+        {
+          "position": 10,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 29,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,61 @@
+{
+  "name": "anim1",
+  "total_frame": 100,
+  "fps": 24,
+  "tracks": [
+    {
+      "type": "PositionTrack",
+      "bind_name": "circle",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [100, 100, 10]
+        },
+        {
+          "position": 25,
+          "value": [600, 100, 10]
+        },
+        {
+          "position": 50,
+          "value": [600, 300, 10]
+        },
+        {
+          "position": 75,
+          "value": [100, 300, 10]
+        },
+        {
+          "position": 99,
+          "value": [100, 100, 10]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "circle",
+      "keyframes": [
+        {
+          "position": 10,
+          "value": [0, 0.5, 1, 1]
+        },
+        {
+          "position": 90,
+          "value": [1, 0.5, 1, 1]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
+      "bind_name": "rect",
+      "keyframes": [
+        {
+          "position": 25,
+          "value": [600, 300, 10]
+        },
+        {
+          "position": 50,
+          "value": [100, 600, 10]
+        }
+      ]
+    }
+  ]
+}
