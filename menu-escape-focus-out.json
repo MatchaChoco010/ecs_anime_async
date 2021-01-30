@@ -1,0 +1,35 @@
+{
+  "name": "modal-fade-in",
+  "total_frame": 10,
+  "fps": 60,
+  "tracks": [
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "escape-select-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 9,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "escape-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [0, 0, 0, 1]
+        },
+        {
+          "position": 9,
+          "value": [1, 1, 1, 1]
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,207 @@
+{
+  "name": "modal-fade-in",
+  "total_frame": 30,
+  "fps": 60,
+  "tracks": [
+    {
+      "type": "PositionTrack",
+      "bind_name": "menu-window",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [250, 470, 10]
+        },
+        {
+          "position": 29,
+          "value": [150, 470, 10]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "menu-window",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [0.2, 0.2, 0.2, 1]
+        },
+        {
+          "position": 20,
+          "value": [0, 0, 0, 0]
+        }
+      ]
+    },
+
+    {
+      "type": "PositionTrack",
+      "bind_name": "attack-select-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [250, 420, 11]
+        },
+        {
+          "position": 29,
+          "value": [150, 420, 11]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
+      "bind_name": "attack-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [200, 415, 12]
+        },
+        {
+          "position": 29,
+          "value": [150, 415, 12]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "attack-text",
+      "keyframes": [
+        {
+          "position": 10,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 29,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+
+    {
+      "type": "PositionTrack",
+      "bind_name": "skill-select-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [250, 450, 11]
+        },
+        {
+          "position": 29,
+          "value": [150, 450, 11]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "skill-text",
+      "keyframes": [
+        {
+          "position": 10,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 29,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
+      "bind_name": "skill-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [200, 445, 12]
+        },
+        {
+          "position": 29,
+          "value": [150, 445, 12]
+        }
+      ]
+    },
+
+    {
+      "type": "PositionTrack",
+      "bind_name": "item-select-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [250, 480, 11]
+        },
+        {
+          "position": 29,
+          "value": [150, 480, 11]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "item-text",
+      "keyframes": [
+        {
+          "position": 10,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 29,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
+      "bind_name": "item-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [200, 475, 12]
+        },
+        {
+          "position": 29,
+          "value": [150, 475, 12]
+        }
+      ]
+    },
+
+    {
+      "type": "PositionTrack",
+      "bind_name": "escape-select-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [250, 510, 11]
+        },
+        {
+          "position": 29,
+          "value": [150, 510, 11]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "escape-text",
+      "keyframes": [
+        {
+          "position": 10,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 29,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
+      "bind_name": "escape-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [200, 505, 12]
+        },
+        {
+          "position": 29,
+          "value": [150, 505, 12]
+        }
+      ]
+    }
+  ]
+}

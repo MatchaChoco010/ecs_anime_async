@@ -140,6 +140,7 @@ impl App {
 
         let game_state = GameState::new()
             .add_bundle::<MessageSystemBundle>()
+            .add_bundle::<DamageEffectSystemBundle>()
             .add_bundle::<AnimationSystemBundle>()
             .flush()
             .build();
@@ -251,7 +252,7 @@ pub fn add_message<S: ToString>(message: S) {
                 z: 25.0,
             },
             Renderable::Rectangle {
-                width: 200.0,
+                width: 300.0,
                 height: 25.0,
                 color: Color::from_rgb(0, 0, 0),
             },
@@ -270,4 +271,241 @@ pub fn add_message<S: ToString>(message: S) {
             MessageText { timer: 0.0 },
         ));
     })
+}
+
+pub fn add_enemy_damage_effect(damage: i32) {
+    WORLD.with(|world| {
+        let mut world = world.borrow_mut();
+        world.push((
+            Position {
+                x: 390.0,
+                y: 350.0,
+                z: 50.0,
+            },
+            Renderable::Text {
+                text: damage.to_string(),
+                color: Color::from_rgb(255, 0, 0),
+            },
+            EnemyDamageChip { timer: 0.0 },
+        ));
+    })
+}
+
+pub fn set_enemy_hp_bar(hp: i32, max_hp: i32) {
+    WORLD.with(|world| {
+        let mut world = world.borrow_mut();
+        <(&EnemyHpBar, &mut Position, &mut Renderable)>::query()
+            .iter_mut(&mut *world)
+            .for_each(|(_, pos, renderable)| {
+                let t = hp as f32 / max_hp as f32;
+                match renderable {
+                    Renderable::Rectangle { width, .. } => {
+                        *width = 120.0 * t;
+                    }
+                    _ => (),
+                }
+                pos.x = 400.0 - 120.0 * (1.0 - t) * 0.5;
+            });
+    })
+}
+
+pub fn add_player_damage_effect(damage: i32) {
+    WORLD.with(|world| {
+        let mut world = world.borrow_mut();
+        world.push((
+            Position {
+                x: 120.0,
+                y: 120.0,
+                z: 50.0,
+            },
+            Renderable::Text {
+                text: damage.to_string(),
+                color: Color::from_rgb(255, 0, 0),
+            },
+            PlayerDamageChip { timer: 0.0 },
+        ));
+    })
+}
+
+pub fn add_player_recovery_effect(recovery: i32) {
+    WORLD.with(|world| {
+        let mut world = world.borrow_mut();
+        world.push((
+            Position {
+                x: 120.0,
+                y: 120.0,
+                z: 50.0,
+            },
+            Renderable::Text {
+                text: recovery.to_string(),
+                color: Color::from_rgb(0, 255, 0),
+            },
+            PlayerDamageChip { timer: 0.0 },
+        ));
+    })
+}
+
+pub fn set_player_hp_bar(hp: i32, max_hp: i32) {
+    WORLD.with(|world| {
+        let mut world = world.borrow_mut();
+        <(&PlayerHpBar, &mut Position, &mut Renderable)>::query()
+            .iter_mut(&mut *world)
+            .for_each(|(_, pos, renderable)| {
+                let t = hp as f32 / max_hp as f32;
+                match renderable {
+                    Renderable::Rectangle { width, .. } => {
+                        *width = 120.0 * t;
+                    }
+                    _ => (),
+                }
+                pos.x = 150.0 - 120.0 * (1.0 - t) * 0.5;
+            });
+        <(&PlayerHpText, &mut Renderable)>::query()
+            .iter_mut(&mut *world)
+            .for_each(|(_, renderable)| match renderable {
+                Renderable::Text { text, .. } => {
+                    *text = format!("HP: {}/{}", hp, max_hp);
+                }
+                _ => (),
+            });
+    })
+}
+
+pub async fn fadeout_submenu_highlight_item(index: usize) {
+    for i in 0..5 {
+        WORLD.with(|world| {
+            let mut world = world.borrow_mut();
+            {
+                let mut highlights: Vec<_> = <(&SubMenuHighlight, &mut Renderable)>::query()
+                    .iter_mut(&mut *world)
+                    .collect();
+                highlights.sort_by_key(|(h, _)| h.index);
+                match highlights.get_mut(index) {
+                    Some((_, Renderable::Rectangle { color, .. })) => {
+                        color.a = 1.0 - i as f32 / 4.0;
+                    }
+                    _ => (),
+                }
+            }
+            {
+                let mut texts: Vec<_> = <(&SubMenuText, &mut Renderable)>::query()
+                    .iter_mut(&mut *world)
+                    .collect();
+                texts.sort_by_key(|(t, _)| t.index);
+                match texts.get_mut(index) {
+                    Some((_, Renderable::Text { color, .. })) => {
+                        color.r = i as f32 / 4.0;
+                        color.g = i as f32 / 4.0;
+                        color.b = i as f32 / 4.0;
+                    }
+                    _ => (),
+                }
+            }
+        });
+        runtime::next_frame().await;
+    }
+}
+
+pub async fn fadein_submenu_highlight_item(index: usize) {
+    for i in 0..5 {
+        WORLD.with(|world| {
+            let mut world = world.borrow_mut();
+            {
+                let mut highlights: Vec<_> = <(&SubMenuHighlight, &mut Renderable)>::query()
+                    .iter_mut(&mut *world)
+                    .collect();
+                highlights.sort_by_key(|(h, _)| h.index);
+                match highlights.get_mut(index) {
+                    Some((_, Renderable::Rectangle { color, .. })) => {
+                        color.a = i as f32 / 4.0;
+                    }
+                    _ => (),
+                }
+            }
+            {
+                let mut texts: Vec<_> = <(&SubMenuText, &mut Renderable)>::query()
+                    .iter_mut(&mut *world)
+                    .collect();
+                texts.sort_by_key(|(t, _)| t.index);
+                match texts.get_mut(index) {
+                    Some((_, Renderable::Text { color, .. })) => {
+                        color.r = 1.0 - i as f32 / 4.0;
+                        color.g = 1.0 - i as f32 / 4.0;
+                        color.b = 1.0 - i as f32 / 4.0;
+                    }
+                    _ => (),
+                }
+            }
+        });
+        runtime::next_frame().await;
+    }
+}
+
+pub fn change_submenu_item_text<S: ToString>(texts: &[S]) {
+    WORLD.with(|world| {
+        let mut world = world.borrow_mut();
+        let mut menu_texts: Vec<_> = <(&SubMenuText, &mut Renderable)>::query()
+            .iter_mut(&mut *world)
+            .collect();
+        menu_texts.sort_by_key(|(t, _)| t.index);
+        for i in 0..4 {
+            match menu_texts.get_mut(i) {
+                Some((_, Renderable::Text { text, .. })) => {
+                    *text = texts
+                        .get(i)
+                        .map(|t| t.to_string())
+                        .unwrap_or("".to_string());
+                }
+                _ => (),
+            }
+        }
+    });
+}
+
+pub async fn fadeout_submenu_description_text() {
+    for i in 0..5 {
+        WORLD.with(|world| {
+            let mut world = world.borrow_mut();
+            <(&SubMenuDescriptionText, &mut Renderable)>::query()
+                .iter_mut(&mut *world)
+                .for_each(|(_, r)| match r {
+                    Renderable::Text { color, .. } => {
+                        color.a = 1.0 - i as f32 / 4.0;
+                    }
+                    _ => (),
+                });
+        });
+        runtime::next_frame().await;
+    }
+}
+
+pub async fn fadein_submenu_description_text() {
+    for i in 0..5 {
+        WORLD.with(|world| {
+            let mut world = world.borrow_mut();
+            <(&SubMenuDescriptionText, &mut Renderable)>::query()
+                .iter_mut(&mut *world)
+                .for_each(|(_, r)| match r {
+                    Renderable::Text { color, .. } => {
+                        color.a = i as f32 / 4.0;
+                    }
+                    _ => (),
+                });
+        });
+        runtime::next_frame().await;
+    }
+}
+
+pub fn change_submenu_description_text(description: String) {
+    WORLD.with(|world| {
+        let mut world = world.borrow_mut();
+        for (_, r) in <(&SubMenuDescriptionText, &mut Renderable)>::query().iter_mut(&mut *world) {
+            match r {
+                Renderable::Text { text, .. } => {
+                    *text = description.clone();
+                }
+                _ => (),
+            }
+        }
+    });
 }

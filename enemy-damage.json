@@ -1,0 +1,41 @@
+{
+  "name": "enemy-damage",
+  "total_frame": 30,
+  "fps": 60,
+  "tracks": [
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "enemy",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 0.5, 0, 1]
+        },
+        {
+          "position": 5,
+          "value": [1, 0.5, 0, 0]
+        },
+        {
+          "position": 10,
+          "value": [1, 0.5, 0, 1]
+        },
+        {
+          "position": 15,
+          "value": [1, 0.5, 0, 0]
+        },
+        {
+          "position": 20,
+          "value": [1, 0.5, 0, 1]
+        },
+        {
+          "position": 25,
+          "value": [1, 0.5, 0, 0]
+        },
+        {
+          "position": 29,
+          "value": [1, 0.5, 0, 1]
+        }
+      ]
+    }
+  ]
+}

@@ -33,3 +33,26 @@ pub struct Message {
 pub struct MessageText {
     pub timer: f64,
 }
+
+pub struct EnemyDamageChip {
+    pub timer: f64,
+}
+
+pub struct EnemyHpBar;
+
+pub struct PlayerDamageChip {
+    pub timer: f64,
+}
+pub struct PlayerHpBar;
+
+pub struct PlayerHpText;
+
+pub struct SubMenuHighlight {
+    pub index: usize,
+}
+
+pub struct SubMenuText {
+    pub index: usize,
+}
+
+pub struct SubMenuDescriptionText;

@@ -1,0 +1,331 @@
+{
+  "name": "submodal-fade-in",
+  "total_frame": 10,
+  "fps": 60,
+  "tracks": [
+    {
+      "type": "PositionTrack",
+      "bind_name": "submenu-description-window",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [510, 470, 10]
+        },
+        {
+          "position": 9,
+          "value": [610, 470, 10]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-description-window",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [0.2, 0.2, 0.2, 1]
+        },
+        {
+          "position": 9,
+          "value": [0.2, 0.2, 0.2, 0]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
+      "bind_name": "submenu-description-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [360, 420, 11]
+        },
+        {
+          "position": 9,
+          "value": [460, 420, 11]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-description-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 9,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+
+    {
+      "type": "PositionTrack",
+      "bind_name": "submenu-item-0-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [250, 410, 10]
+        },
+        {
+          "position": 9,
+          "value": [350, 410, 10]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-0-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [0.2, 0.2, 0.2, 1]
+        },
+        {
+          "position": 9,
+          "value": [0.2, 0.2, 0.2, 0]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-0-highlight",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
+      "bind_name": "submenu-item-0-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [190, 400, 12]
+        },
+        {
+          "position": 9,
+          "value": [290, 400, 12]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-0-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 9,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+
+    {
+      "type": "PositionTrack",
+      "bind_name": "submenu-item-1-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [250, 450, 10]
+        },
+        {
+          "position": 9,
+          "value": [350, 450, 10]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-1-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [0.2, 0.2, 0.2, 1]
+        },
+        {
+          "position": 9,
+          "value": [0.2, 0.2, 0.2, 0]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-1-highlight",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
+      "bind_name": "submenu-item-1-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [190, 440, 12]
+        },
+        {
+          "position": 9,
+          "value": [290, 440, 12]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-1-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 9,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+
+    {
+      "type": "PositionTrack",
+      "bind_name": "submenu-item-2-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [250, 490, 10]
+        },
+        {
+          "position": 9,
+          "value": [350, 490, 10]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-2-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [0.2, 0.2, 0.2, 1]
+        },
+        {
+          "position": 9,
+          "value": [0.2, 0.2, 0.2, 0]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-2-highlight",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
+      "bind_name": "submenu-item-2-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [190, 480, 12]
+        },
+        {
+          "position": 9,
+          "value": [290, 480, 12]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-2-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 9,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+
+    {
+      "type": "PositionTrack",
+      "bind_name": "submenu-item-3-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [250, 530, 10]
+        },
+        {
+          "position": 9,
+          "value": [350, 530, 10]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-3-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [0.2, 0.2, 0.2, 1]
+        },
+        {
+          "position": 9,
+          "value": [0.2, 0.2, 0.2, 0]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-3-highlight",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    },
+    {
+      "type": "PositionTrack",
+      "bind_name": "submenu-item-3-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [190, 520, 12]
+        },
+        {
+          "position": 9,
+          "value": [290, 520, 12]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "submenu-item-3-text",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 1, 1]
+        },
+        {
+          "position": 9,
+          "value": [1, 1, 1, 0]
+        }
+      ]
+    }
+  ]
+}

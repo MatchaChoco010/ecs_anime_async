@@ -1,0 +1,49 @@
+{
+  "name": "encounter-enemy",
+  "total_frame": 21,
+  "fps": 60,
+  "tracks": [
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "enemy",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 0.5, 0, 0]
+        },
+        {
+          "position": 20,
+          "value": [1, 0.5, 0, 1]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "enemy-hp-bar-window",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [0.2, 0.2, 0.2, 0]
+        },
+        {
+          "position": 20,
+          "value": [0.2, 0.2, 0.2, 1]
+        }
+      ]
+    },
+    {
+      "type": "RenderableColorTrack",
+      "bind_name": "enemy-hp-bar-rect",
+      "keyframes": [
+        {
+          "position": 0,
+          "value": [1, 1, 0.5, 0]
+        },
+        {
+          "position": 20,
+          "value": [1, 1, 0.5, 1]
+        }
+      ]
+    }
+  ]
+}
